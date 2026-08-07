@@ -8,7 +8,8 @@ const messages = {
   avatar_updated: "Tu avatar se actualizó correctamente.",
   callback_failed: "El enlace no es válido o ya venció. Solicitá uno nuevo.",
   check_email: "Revisá tu email para confirmar la cuenta.",
-  configuration: "Falta conectar el proyecto Supabase de desarrollo.",
+  configuration:
+    "Falta configurar Supabase para este entorno. Revisá las variables de entorno del sitio.",
   email_not_confirmed:
     "Primero confirmá tu email desde el mensaje que te enviamos. Revisá también la carpeta de spam.",
   email_not_authorized:

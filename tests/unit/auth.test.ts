@@ -73,6 +73,12 @@ describe("authentication redirects and feedback", () => {
     expect(getFeedback({ error: "<script>alert(1)</script>" })).toBeNull();
   });
 
+  it("uses a deployment-neutral message when Supabase is not configured", () => {
+    expect(getFeedback({ error: "configuration" })?.message).toContain(
+      "variables de entorno",
+    );
+  });
+
   it("explains when login requires email confirmation", () => {
     expect(loginErrorFeedbackCode("email_not_confirmed")).toBe(
       "email_not_confirmed",
