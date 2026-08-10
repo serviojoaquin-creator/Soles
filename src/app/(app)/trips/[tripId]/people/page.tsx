@@ -82,7 +82,8 @@ export default async function PeoplePage({
   const { currentUserId, invites, members, role: actorRole, trip } = context;
   const feedback = getMemberFeedback(query);
   const isCompleted = trip.status === "completed";
-  const managesInvites = canManageInvites(actorRole) && !isCompleted;
+  const acceptsContentWrites = !isCompleted || trip.allow_completed_edits;
+  const managesInvites = canManageInvites(actorRole) && acceptsContentWrites;
 
   return (
     <section className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
@@ -127,7 +128,7 @@ export default async function PeoplePage({
             {members.map((member) => {
               const isCurrentUser = member.userId === currentUserId;
               const canChange =
-                !isCompleted &&
+                acceptsContentWrites &&
                 canChangeMemberRole(
                   actorRole,
                   currentUserId,
@@ -135,7 +136,7 @@ export default async function PeoplePage({
                   member.userId,
                 );
               const canRemove =
-                !isCompleted &&
+                acceptsContentWrites &&
                 canRemoveMember(
                   actorRole,
                   currentUserId,
@@ -143,7 +144,7 @@ export default async function PeoplePage({
                   member.userId,
                 );
               const canTransfer =
-                !isCompleted &&
+                acceptsContentWrites &&
                 canTransferOwnership(
                   actorRole,
                   currentUserId,
@@ -309,7 +310,7 @@ export default async function PeoplePage({
             })}
           </div>
 
-          {!isCompleted && canLeaveTrip(actorRole) ? (
+          {acceptsContentWrites && canLeaveTrip(actorRole) ? (
             <form
               action={leaveTripAction}
               className="border-line mt-7 border-t pt-6"
@@ -343,7 +344,7 @@ export default async function PeoplePage({
               </div>
             </div>
 
-            {isCompleted ? (
+            {!acceptsContentWrites ? (
               <p className="border-line text-muted mt-6 rounded-xl border border-dashed p-4 text-sm leading-6">
                 Este recuerdo es de solo lectura. El owner debe reabrirlo antes
                 de crear invitaciones o cambiar participantes.
