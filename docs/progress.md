@@ -393,3 +393,15 @@ Estado: infraestructura local implementada el 7 de agosto de 2026; recorrido pri
 - Ejecutar el recorrido privado completo con `E2E_ALLOW_MUTATIONS=1` y revisar sus trazas ante cualquier fallo.
 - Renovar el login de Supabase CLI, ejecutar pgTAP/RLS y regenerar los tipos desde el esquema remoto.
 - Aprobar el entorno destino antes de vincular o desplegar Vercel y Supabase.
+
+### Corrección posterior al despliegue
+
+- Los registros de producción mostraron que la ruta de subida de fotos fallaba al cargar `sharp` porque faltaba `libvips-cpp.so.8.18.3`; no era un fallo de permisos de Supabase ni del bucket privado.
+- Se declararon como dependencias opcionales directas los paquetes Linux x64 de `sharp` y `libvips`, además del trazado ya existente. Vercel instalará el binario compatible durante su build Linux.
+- Verificación local posterior: `npm run lint`, `npm run typecheck`, `npm test` (19 archivos, 90 pruebas) y `npm run build` correctos. Falta comprobar una subida real después del próximo despliegue de producción.
+
+### Opción de edición en Recuerdos
+
+- El owner puede decidir si un viaje finalizado se mantiene protegido o admite ediciones sin dejar de estar en Recuerdos. La opción inicia deshabilitada y se cambia únicamente mediante la RPC `set_trip_completed_editing`.
+- La migración local `202608100001_completed_trip_editing_option.sql` agrega `trips.allow_completed_edits`, actualiza las protecciones de RLS, Storage, triggers y RPCs de borrado lógico. No se aplicó todavía al proyecto remoto.
+- Verificación local: `npm run lint`, `npm run typecheck`, `npm test` (20 archivos, 94 pruebas) y `npm run build` correctos.
