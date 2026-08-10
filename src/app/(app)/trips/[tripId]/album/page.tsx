@@ -53,6 +53,7 @@ export default async function AlbumPage({
   } = context;
   const feedback = getAlbumFeedback(query);
   const isCompleted = trip.status === "completed";
+  const acceptsContentWrites = !isCompleted || trip.allow_completed_edits;
   const activityNames = new Map(
     activities.map((activity) => [activity.id, activity.title]),
   );
@@ -108,7 +109,7 @@ export default async function AlbumPage({
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {photos.map((photo) => {
                 const canDelete =
-                  !isCompleted &&
+                  acceptsContentWrites &&
                   canModerateOwnedContent(
                     role,
                     currentUserId,
@@ -227,14 +228,14 @@ export default async function AlbumPage({
                 {isCompleted ? "Recuerdo" : "Nueva"}
               </p>
               <h2 className="text-xl font-semibold">
-                {isCompleted ? "Álbum protegido" : "Subir una foto"}
+                {acceptsContentWrites ? "Subir una foto" : "Álbum protegido"}
               </h2>
             </div>
           </div>
-          {isCompleted ? (
+          {!acceptsContentWrites ? (
             <p className="text-muted mt-6 text-sm leading-6">
               Las fotos son de solo lectura. Podés seguir comentándolas; el
-              owner debe reabrir el viaje para subir o quitar imágenes.
+              el owner puede habilitar la edición desde Configuración.
             </p>
           ) : (
             <div className="mt-6">
