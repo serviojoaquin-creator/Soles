@@ -10,7 +10,7 @@ import {
 import type { DashboardTrip } from "@/features/trips/server";
 
 export function TripCard({ item }: { item: DashboardTrip }) {
-  const { coverUrl, role, trip } = item;
+  const { category, coverUrl, role, trip } = item;
   const href: Route =
     trip.status === "completed"
       ? (`/trips/${trip.id}/memory` as Route)
@@ -34,7 +34,7 @@ export function TripCard({ item }: { item: DashboardTrip }) {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(255,255,255,.45),transparent_25%),linear-gradient(130deg,transparent_40%,rgba(64,35,58,.22))]" />
         )}
         <span className="bg-surface/90 text-foreground absolute top-4 left-4 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur">
-          {tripStatusLabels[trip.status]}
+          {category === "active" ? "En curso" : tripStatusLabels[trip.status]}
         </span>
       </div>
       <div className="p-5">
