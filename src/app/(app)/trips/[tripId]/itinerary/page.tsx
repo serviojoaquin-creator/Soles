@@ -78,6 +78,7 @@ export default async function ItineraryPage({
   const feedback = getItineraryFeedback(query);
   const days = groupActivitiesByDay(activities);
   const isCompleted = trip.status === "completed";
+  const acceptsContentWrites = !isCompleted || trip.allow_completed_edits;
 
   return (
     <section className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
@@ -138,7 +139,7 @@ export default async function ItineraryPage({
                 <div className="border-line ml-[0.34rem] space-y-4 border-l pt-4 pl-5 sm:pl-7">
                   {items.map((activity) => {
                     const canEdit =
-                      !isCompleted &&
+                      acceptsContentWrites &&
                       canEditActivity(role, currentUserId, activity.created_by);
                     const sameTime = items.filter(
                       (item) => item.start_time === activity.start_time,
@@ -422,14 +423,14 @@ export default async function ItineraryPage({
                 {isCompleted ? "Recuerdo" : "Nueva"}
               </p>
               <h2 className="text-xl font-semibold">
-                {isCompleted ? "Itinerario protegido" : "Agregar actividad"}
+                {acceptsContentWrites ? "Agregar actividad" : "Itinerario protegido"}
               </h2>
             </div>
           </div>
-          {isCompleted ? (
+          {!acceptsContentWrites ? (
             <p className="text-muted mt-6 text-sm leading-6">
               Las actividades son de solo lectura. Podés seguir comentándolas;
-              el owner debe reabrir el viaje para editarlas.
+              el owner puede habilitar la edición desde Configuración.
             </p>
           ) : (
             <div className="mt-6">
