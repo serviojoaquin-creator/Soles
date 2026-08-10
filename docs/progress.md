@@ -403,5 +403,5 @@ Estado: infraestructura local implementada el 7 de agosto de 2026; recorrido pri
 ### Opción de edición en Recuerdos
 
 - El owner puede decidir si un viaje finalizado se mantiene protegido o admite ediciones sin dejar de estar en Recuerdos. La opción inicia deshabilitada y se cambia únicamente mediante la RPC `set_trip_completed_editing`.
-- La migración local `202608100001_completed_trip_editing_option.sql` agrega `trips.allow_completed_edits`, actualiza las protecciones de RLS, Storage, triggers y RPCs de borrado lógico. No se aplicó todavía al proyecto remoto.
+- La migración `202608100001_completed_trip_editing_option.sql` agrega `trips.allow_completed_edits`, actualiza las protecciones de RLS, Storage, triggers y RPCs de borrado lógico. Fue aplicada correctamente al proyecto remoto de Supabase.
 - Verificación local: `npm run lint`, `npm run typecheck`, `npm test` (20 archivos, 94 pruebas) y `npm run build` correctos.
