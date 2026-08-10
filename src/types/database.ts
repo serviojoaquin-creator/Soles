@@ -38,6 +38,7 @@ export type Database = {
       };
       trips: {
         Row: {
+          allow_completed_edits: boolean;
           completed_at: string | null;
           cover_path: string | null;
           created_at: string;
@@ -54,6 +55,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          allow_completed_edits?: boolean;
           completed_at?: string | null;
           cover_path?: string | null;
           created_at?: string;
@@ -70,6 +72,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          allow_completed_edits?: boolean;
           completed_at?: string | null;
           cover_path?: string | null;
           created_at?: string;
@@ -439,6 +442,10 @@ export type Database = {
       };
       set_trip_deleted: {
         Args: { p_deleted: boolean; p_trip_id: string };
+        Returns: Database["public"]["Tables"]["trips"]["Row"];
+      };
+      set_trip_completed_editing: {
+        Args: { p_allow_edits: boolean; p_trip_id: string };
         Returns: Database["public"]["Tables"]["trips"]["Row"];
       };
       set_trip_status: {
