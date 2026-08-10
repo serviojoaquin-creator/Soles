@@ -220,7 +220,7 @@ export async function deletePhotoAction(formData: FormData) {
       destination(parsed.data.tripId, "album", "error", "photo_forbidden"),
     );
   }
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     redirect(
       destination(parsed.data.tripId, "album", "error", "photo_read_only"),
     );
