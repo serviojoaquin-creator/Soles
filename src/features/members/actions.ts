@@ -125,7 +125,7 @@ export async function createInviteAction(
   if (!access || !canManageInvites(access.role)) {
     return { status: "error", message: "No tenés permisos para invitar." };
   }
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     return {
       status: "error",
       message: "El recuerdo debe reabrirse antes de crear invitaciones.",
@@ -203,7 +203,7 @@ export async function revokeInviteAction(formData: FormData) {
   if (!access || !canManageInvites(access.role)) {
     redirect(membersPath(parsed.data.tripId, "error", "members_forbidden"));
   }
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     redirect(membersPath(parsed.data.tripId, "error", "members_read_only"));
   }
 
@@ -262,7 +262,7 @@ export async function updateMemberRoleAction(formData: FormData) {
   ) {
     redirect(membersPath(parsed.data.tripId, "error", "members_forbidden"));
   }
-  if (!tripAcceptsContentWrites(actorAccess.status)) {
+  if (!tripAcceptsContentWrites(actorAccess)) {
     redirect(membersPath(parsed.data.tripId, "error", "members_read_only"));
   }
 
@@ -303,7 +303,7 @@ export async function removeMemberAction(formData: FormData) {
   ) {
     redirect(membersPath(parsed.data.tripId, "error", "members_forbidden"));
   }
-  if (!tripAcceptsContentWrites(actorAccess.status)) {
+  if (!tripAcceptsContentWrites(actorAccess)) {
     redirect(membersPath(parsed.data.tripId, "error", "members_read_only"));
   }
 
@@ -336,7 +336,7 @@ export async function leaveTripAction(formData: FormData) {
   if (!access || !canLeaveTrip(access.role)) {
     redirect(membersPath(parsed.data.tripId, "error", "members_forbidden"));
   }
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     redirect(membersPath(parsed.data.tripId, "error", "members_read_only"));
   }
 
@@ -383,7 +383,7 @@ export async function transferOwnershipAction(formData: FormData) {
   ) {
     redirect(membersPath(parsed.data.tripId, "error", "members_forbidden"));
   }
-  if (!tripAcceptsContentWrites(actorAccess.status)) {
+  if (!tripAcceptsContentWrites(actorAccess)) {
     redirect(membersPath(parsed.data.tripId, "error", "members_read_only"));
   }
 
