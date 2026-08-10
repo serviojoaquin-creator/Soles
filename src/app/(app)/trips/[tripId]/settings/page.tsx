@@ -20,6 +20,7 @@ import {
   finalizeTripAction,
   removeTripCoverAction,
   reopenTripAction,
+  setTripCompletedEditingAction,
   updateTripAction,
   uploadTripCoverAction,
 } from "@/features/trips/actions";
@@ -60,7 +61,8 @@ export default async function SettingsPage({
   const { archivedAt, coverUrl, role, trip } = context;
   const feedback = getTripFeedback(query);
   const isCompleted = trip.status === "completed";
-  const editable = canEditTrip(role) && !isCompleted;
+  const completedEditingEnabled = isCompleted && trip.allow_completed_edits;
+  const editable = canEditTrip(role) && (!isCompleted || completedEditingEnabled);
 
   return (
     <section className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
@@ -116,7 +118,7 @@ export default async function SettingsPage({
           ) : (
             <div className="border-line text-muted mt-8 rounded-2xl border border-dashed p-5 text-sm leading-6">
               {isCompleted
-                ? "Este recuerdo es de solo lectura. El owner puede reabrirlo desde el control de estado."
+                ? "Este recuerdo está protegido. El owner puede habilitar ediciones sin reabrirlo desde el control de estado."
                 : "Como miembro podés ver la información, pero solo owner y admin pueden editar los datos generales."}
             </div>
           )}
@@ -229,6 +231,40 @@ export default async function SettingsPage({
                   className="bg-brand hover:bg-brand-strong mt-3 h-11 w-full rounded-xl px-4 text-sm font-semibold text-white transition"
                 >
                   Finalizar viaje
+                </button>
+              </form>
+            ) : null}
+
+            {trip.status === "completed" && canReopenTrip(role) ? (
+              <form
+                action={setTripCompletedEditingAction}
+                className="border-line mt-5 rounded-xl border p-4"
+              >
+                <input type="hidden" name="tripId" value={tripId} />
+                <input
+                  type="hidden"
+                  name="allowEdits"
+                  value={completedEditingEnabled ? "false" : "true"}
+                />
+                <label className="flex items-start gap-2 text-xs leading-5">
+                  <input
+                    type="checkbox"
+                    name="confirm"
+                    value="yes"
+                    required
+                    className="mt-1"
+                  />
+                  {completedEditingEnabled
+                    ? "Confirmo que quiero volver a proteger este recuerdo contra ediciones."
+                    : "Confirmo que quiero permitir ediciones manteniendo el viaje como recuerdo."}
+                </label>
+                <button
+                  type="submit"
+                  className="border-line hover:bg-accent-soft mt-3 h-11 w-full rounded-xl border px-4 text-sm font-semibold transition"
+                >
+                  {completedEditingEnabled
+                    ? "Proteger recuerdo"
+                    : "Permitir ediciones"}
                 </button>
               </form>
             ) : null}
