@@ -45,6 +45,14 @@ const feedbackMessages = {
     kind: "success",
     message: "El viaje se convirtió en un recuerdo sin perder contenido.",
   },
+  trip_completed_editing_disabled: {
+    kind: "success",
+    message: "El recuerdo volvió a quedar protegido contra ediciones.",
+  },
+  trip_completed_editing_enabled: {
+    kind: "success",
+    message: "El recuerdo admite ediciones sin dejar de estar finalizado.",
+  },
   trip_completed_read_only: {
     kind: "warning",
     message:
