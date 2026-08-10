@@ -68,7 +68,7 @@ export async function POST(
 
   const access = await getTripMutationAccess(supabase, user.id, tripId);
   if (!access) return failure("photo_forbidden", 403);
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     return failure("photo_read_only", 409);
   }
 
