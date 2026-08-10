@@ -62,6 +62,12 @@ export const lifecycleTripSchema = z.object({
   tripId: tripIdSchema,
 });
 
+export const completedEditingTripSchema = z.object({
+  allowEdits: z.enum(["true", "false"]),
+  confirm: z.literal("yes"),
+  tripId: tripIdSchema,
+});
+
 export function tripFormValue(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value : "";
