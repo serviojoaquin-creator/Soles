@@ -3,20 +3,40 @@ import type { Tables } from "@/types/database";
 export type TripRow = Tables<"trips">;
 export type DashboardCategory = "upcoming" | "active" | "memories" | "archived";
 
+function todayInTimezone(timezone: string, reference: Date) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: timezone,
+    year: "numeric",
+  }).formatToParts(reference);
+  const values = Object.fromEntries(
+    parts
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value]),
+  );
+
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
 export function dashboardCategory(
-  trip: Pick<TripRow, "status">,
+  trip: Pick<TripRow, "default_timezone" | "start_date" | "status">,
   archivedAt: string | null,
+  reference = new Date(),
 ): DashboardCategory {
   if (archivedAt) {
     return "archived";
   }
 
-  if (trip.status === "active") {
-    return "active";
-  }
-
   if (trip.status === "completed") {
     return "memories";
+  }
+
+  if (
+    trip.status === "active" ||
+    trip.start_date <= todayInTimezone(trip.default_timezone, reference)
+  ) {
+    return "active";
   }
 
   return "upcoming";
