@@ -116,7 +116,7 @@ export async function createActivityAction(formData: FormData) {
   if (!membership) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_forbidden"));
   }
-  if (!tripAcceptsContentWrites(membership.status)) {
+  if (!tripAcceptsContentWrites(membership)) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_read_only"));
   }
 
@@ -212,7 +212,7 @@ export async function updateActivityAction(formData: FormData) {
   if (!membership || !activity) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_forbidden"));
   }
-  if (!tripAcceptsContentWrites(membership.status)) {
+  if (!tripAcceptsContentWrites(membership)) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_read_only"));
   }
   if (!mutationAllowed(membership.role, user.id, activity)) {
@@ -273,7 +273,7 @@ export async function updateActivityStatusAction(formData: FormData) {
   if (!membership || !activity) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_forbidden"));
   }
-  if (!tripAcceptsContentWrites(membership.status)) {
+  if (!tripAcceptsContentWrites(membership)) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_read_only"));
   }
   if (!mutationAllowed(membership.role, user.id, activity)) {
@@ -314,7 +314,7 @@ export async function deleteActivityAction(formData: FormData) {
   if (!membership || !activity) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_forbidden"));
   }
-  if (!tripAcceptsContentWrites(membership.status)) {
+  if (!tripAcceptsContentWrites(membership)) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_read_only"));
   }
   if (!mutationAllowed(membership.role, user.id, activity)) {
@@ -353,7 +353,7 @@ export async function reorderActivityAction(formData: FormData) {
   if (!membership || !activity) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_forbidden"));
   }
-  if (!tripAcceptsContentWrites(membership.status)) {
+  if (!tripAcceptsContentWrites(membership)) {
     redirect(itineraryPath(parsed.data.tripId, "error", "activity_read_only"));
   }
   if (!mutationAllowed(membership.role, user.id, activity)) {
