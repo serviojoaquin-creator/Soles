@@ -58,10 +58,47 @@ describe("trip validation", () => {
 describe("trip presentation and permissions", () => {
   it("lets archive state take precedence over lifecycle sections", () => {
     expect(
-      dashboardCategory({ status: "active" }, "2026-11-20T12:00:00Z"),
+      dashboardCategory(
+        {
+          default_timezone: "America/Argentina/Buenos_Aires",
+          start_date: "2026-11-05",
+          status: "active",
+        },
+        "2026-11-20T12:00:00Z",
+      ),
     ).toBe("archived");
-    expect(dashboardCategory({ status: "planning" }, null)).toBe("upcoming");
-    expect(dashboardCategory({ status: "completed" }, null)).toBe("memories");
+    expect(
+      dashboardCategory(
+        {
+          default_timezone: "America/Argentina/Buenos_Aires",
+          start_date: "2026-11-05",
+          status: "planning",
+        },
+        null,
+        new Date("2026-11-01T12:00:00Z"),
+      ),
+    ).toBe("upcoming");
+    expect(
+      dashboardCategory(
+        {
+          default_timezone: "America/Argentina/Buenos_Aires",
+          start_date: "2026-11-05",
+          status: "planning",
+        },
+        null,
+        new Date("2026-11-05T12:00:00Z"),
+      ),
+    ).toBe("active");
+    expect(
+      dashboardCategory(
+        {
+          default_timezone: "America/Argentina/Buenos_Aires",
+          start_date: "2026-11-05",
+          status: "completed",
+        },
+        null,
+      ),
+    ).toBe("memories");
   });
 
   it("allows owner/admin edits but reserves activation for the owner", () => {
