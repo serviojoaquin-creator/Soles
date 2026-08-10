@@ -17,6 +17,7 @@ import {
 } from "@/features/trips/mutation-access";
 import {
   archiveTripSchema,
+  completedEditingTripSchema,
   lifecycleTripSchema,
   tripFormValue,
   tripIdSchema,
@@ -232,7 +233,7 @@ export async function updateTripAction(formData: FormData) {
   if (!access || !canEditTrip(access.role)) {
     redirect(feedbackPath(fallback, "error", "forbidden"));
   }
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     redirect(feedbackPath(fallback, "error", "trip_completed_read_only"));
   }
 
@@ -400,6 +401,55 @@ export async function reopenTripAction(formData: FormData) {
   );
 }
 
+export async function setTripCompletedEditingAction(formData: FormData) {
+  const parsed = completedEditingTripSchema.safeParse({
+    allowEdits: tripFormValue(formData, "allowEdits"),
+    confirm: tripFormValue(formData, "confirm"),
+    tripId: tripFormValue(formData, "tripId"),
+  });
+  if (!parsed.success) redirect("/dashboard?error=invalid_trip");
+
+  const { supabase, user } = await authenticatedClient();
+  const access = await getTripMutationAccess(
+    supabase,
+    user.id,
+    parsed.data.tripId,
+  );
+  if (!access || !canReopenTrip(access.role) || access.status !== "completed") {
+    redirect(
+      feedbackPath(`/trips/${parsed.data.tripId}/memory`, "error", "forbidden"),
+    );
+  }
+
+  const allowEdits = parsed.data.allowEdits === "true";
+  if (access.allowCompletedEdits === allowEdits) {
+    redirect(`/trips/${parsed.data.tripId}/settings` as Route);
+  }
+
+  const { data, error } = await supabase.rpc("set_trip_completed_editing", {
+    p_allow_edits: allowEdits,
+    p_trip_id: parsed.data.tripId,
+  });
+  if (error || !data || data.allow_completed_edits !== allowEdits) {
+    redirect(
+      feedbackPath(
+        `/trips/${parsed.data.tripId}/settings`,
+        "error",
+        "unavailable",
+      ),
+    );
+  }
+
+  revalidateTripLifecycle(parsed.data.tripId);
+  redirect(
+    feedbackPath(
+      `/trips/${parsed.data.tripId}/settings`,
+      "message",
+      allowEdits ? "trip_completed_editing_enabled" : "trip_completed_editing_disabled",
+    ),
+  );
+}
+
 export async function deleteTripAction(formData: FormData) {
   const parsed = lifecycleTripSchema.safeParse({
     confirm: tripFormValue(formData, "confirm"),
@@ -502,7 +552,7 @@ export async function uploadTripCoverAction(formData: FormData) {
   if (!access || !canEditTrip(access.role)) {
     redirect(feedbackPath(fallback, "error", "forbidden"));
   }
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     redirect(feedbackPath(fallback, "error", "trip_completed_read_only"));
   }
 
@@ -543,7 +593,7 @@ export async function removeTripCoverAction(formData: FormData) {
   if (!access || !canEditTrip(access.role)) {
     redirect(feedbackPath(fallback, "error", "forbidden"));
   }
-  if (!tripAcceptsContentWrites(access.status)) {
+  if (!tripAcceptsContentWrites(access)) {
     redirect(feedbackPath(fallback, "error", "trip_completed_read_only"));
   }
 
