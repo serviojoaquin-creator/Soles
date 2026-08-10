@@ -61,7 +61,7 @@ Documento iniciado en la Fase 1 y actualizado hasta la auditoría local de la Fa
 
 ## Decisiones de Fase 4
 
-- El dashboard se deriva del estado explícito del viaje: `planning` alimenta Próximos, `active` En curso y `completed` Recuerdos. `trip_members.archived_at` tiene precedencia y mueve el viaje únicamente a Archivados para ese usuario.
+- El dashboard usa el ciclo de vida y la fecha de inicio: `planning` aparece en Próximos hasta que llega su fecha; desde entonces se muestra En curso hasta que el owner lo finaliza. `completed` alimenta Recuerdos. `trip_members.archived_at` tiene precedencia y mueve el viaje únicamente a Archivados para ese usuario.
 - La creación usa exclusivamente `create_trip`, que inserta viaje y owner en una transacción. La edición de datos generales usa updates directos limitados por verificación server-side, RLS y el guard de escritura existente.
 - La transición `planning → active` usa `set_trip_status` y vuelve a comprobar el rol owner antes de invocar la RPC. La finalización y reapertura permanecen fuera de esta fase.
 - Las consultas autenticadas se resuelven en Server Components dinámicos. Un viaje no accesible por RLS se trata como inexistente para no filtrar identificadores.
@@ -125,6 +125,9 @@ Documento iniciado en la Fase 1 y actualizado hasta la auditoría local de la Fa
 - La Fase 10 no agrega ni modifica migraciones. Las mejoras de base usan RPC y RLS ya aplicadas remotamente.
 
 ## Decisiones de Fase 11
+
+- Un viaje completado sigue siendo un Recuerdo, pero el owner puede habilitar o deshabilitar sus ediciones sin cambiar su estado. La opción inicia deshabilitada. Cuando está activa se conservan los permisos habituales de owner, admin y member; solo el owner puede cambiarla mediante una RPC transaccional.
+- El endpoint de subida de fotos incorpora los binarios Linux de `sharp` y `libvips` en su trazado de salida. Además, los paquetes Linux x64 se declaran como dependencias opcionales directas: el lockfile se genera también en Windows y la instalación de Vercel debe resolver el binario que corresponde a Linux. Así se evita que el bundle de producción tenga `sharp` sin su `libvips` dinámico.
 
 - Playwright prueba siempre la superficie pública en viewport de escritorio y móvil, incluida la protección de rutas y la neutralización de redirects externos.
 - El recorrido privado requiere tres cuentas confirmadas: owner, member y outsider. Se omite si falta cualquiera de ellas o si `E2E_ALLOW_MUTATIONS` no vale `1`.
