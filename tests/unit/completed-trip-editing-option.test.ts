@@ -50,6 +50,19 @@ describe("completed trip editing option", () => {
     expect(migration).toContain("to authenticated");
   });
 
+  it("keeps existing memories editable and enables the default for new trips", () => {
+    const defaultMigration = readFileSync(
+      "supabase/migrations/202608110001_completed_trips_editable_by_default.sql",
+      "utf8",
+    );
+
+    expect(defaultMigration).toContain(
+      "alter column allow_completed_edits set default true",
+    );
+    expect(defaultMigration).toContain("where status = 'completed'");
+    expect(defaultMigration).toContain("set allow_completed_edits = true");
+  });
+
   it("keeps comments unchanged while updating photos and activities safely", () => {
     expect(migration).not.toContain("soft_delete_comment");
     expect(migration).toContain("create or replace function public.soft_delete_photo");
