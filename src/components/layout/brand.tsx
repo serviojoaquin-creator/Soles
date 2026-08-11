@@ -1,19 +1,28 @@
+import Image from "next/image";
 import Link from "next/link";
 
-export function Brand() {
+type BrandProps = {
+  showName?: boolean;
+  variant?: "default" | "inverse";
+};
+
+export function Brand({ showName = true, variant = "default" }: BrandProps) {
   return (
     <Link
       href="/"
-      className="text-foreground inline-flex items-center gap-3 rounded-lg font-semibold tracking-tight"
+      className={`inline-flex items-center gap-3 rounded-lg font-semibold tracking-tight ${
+        variant === "inverse" ? "text-white" : "text-foreground"
+      }`}
       aria-label="Soles, inicio"
     >
-      <span
-        aria-hidden="true"
-        className="grid size-10 place-items-center rounded-2xl text-sm font-bold text-white shadow-sm [background:linear-gradient(145deg,var(--sun),var(--accent),var(--dusk))]"
-      >
-        S
-      </span>
-      <span>Soles</span>
+      <Image
+        src="/soles-logo.webp"
+        alt=""
+        width={80}
+        height={80}
+        className="size-10 rounded-2xl shadow-sm"
+      />
+      {showName ? <span>Soles</span> : null}
     </Link>
   );
 }
