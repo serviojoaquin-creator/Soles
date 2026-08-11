@@ -93,7 +93,7 @@ Documento iniciado en la Fase 1 y actualizado hasta la auditoría local de la Fa
 
 - Las fotos viven en el bucket privado `trip-photos`, limitado a 4 MB y a JPEG, PNG o WebP. Los objetos usan exclusivamente la ruta `trip_id/uuid.ext`; una función SQL rechaza cualquier otro formato antes de evaluar membresía.
 - La subida usa un Route Handler Node autenticado para poder mostrar progreso real con `XMLHttpRequest`. Vuelve a comprobar sesión y membresía, y nunca usa `service_role`.
-- `sharp` inspecciona el formato real, dimensiones y cantidad de páginas. El MIME declarado debe coincidir con el contenido y no se permiten imágenes animadas. El límite de aplicación nunca puede superar el hard limit del bucket.
+- Parsers acotados de `Buffer` inspeccionan el formato real, MIME, dimensiones y animación de JPEG, PNG y WebP. El límite de aplicación nunca puede superar el hard limit del bucket y la ruta no depende de binarios nativos.
 - Cantidad por viaje, frecuencia por usuario, tamaño, dimensiones y tamaño de página son configurables por entorno. Sus valores por defecto son 500 fotos por viaje, 10 subidas por minuto, 4 MB, 12000 píxeles por lado y 12 fotos por lote.
 - El objeto se crea antes que la fila `photos`; si fallan los metadatos, el servidor elimina inmediatamente el objeto huérfano. El borrado lógico intenta eliminar el objeto privado y registra explícitamente una limpieza manual si Storage falla.
 - El álbum crea URLs firmadas de cinco minutos al renderizar y nunca las persiste. La grilla carga lotes incrementales y usa Server Components; solo el formulario con progreso necesita estado cliente.
@@ -127,7 +127,7 @@ Documento iniciado en la Fase 1 y actualizado hasta la auditoría local de la Fa
 ## Decisiones de Fase 11
 
 - Un viaje completado sigue siendo un Recuerdo, pero el owner puede habilitar o deshabilitar sus ediciones sin cambiar su estado. La opción inicia deshabilitada. Cuando está activa se conservan los permisos habituales de owner, admin y member; solo el owner puede cambiarla mediante una RPC transaccional.
-- El endpoint de subida de fotos incorpora los binarios Linux de `sharp` y `libvips` en su trazado de salida. Además, los paquetes Linux x64 se declaran como dependencias opcionales directas: el lockfile se genera también en Windows y la instalación de Vercel debe resolver el binario que corresponde a Linux. Así se evita que el bundle de producción tenga `sharp` sin su `libvips` dinámico.
+- La inspección de fotos no depende de binarios nativos: valida firma, MIME real, dimensiones y animación de JPEG, PNG y WebP con parsers acotados de `Buffer`. Esto elimina el punto de fallo de `sharp`/`libvips` en funciones Linux de Vercel, sin relajar las comprobaciones previas a Storage.
 
 - Playwright prueba siempre la superficie pública en viewport de escritorio y móvil, incluida la protección de rutas y la neutralización de redirects externos.
 - El recorrido privado requiere tres cuentas confirmadas: owner, member y outsider. Se omite si falta cualquiera de ellas o si `E2E_ALLOW_MUTATIONS` no vale `1`.
