@@ -400,6 +400,7 @@ Estado: infraestructura local implementada el 7 de agosto de 2026; recorrido pri
 - Se declararon como dependencias opcionales directas los paquetes Linux x64 de `sharp` y `libvips`, además del trazado ya existente. Vercel instalará el binario compatible durante su build Linux.
 - Verificación local posterior: `npm run lint`, `npm run typecheck`, `npm test` (19 archivos, 90 pruebas) y `npm run build` correctos. Falta comprobar una subida real después del próximo despliegue de producción.
 - El 11 de agosto de 2026 se conectó el repositorio de GitHub al proyecto de producción `soles-seven`; el siguiente commit de `main` despliega estas correcciones en `soles-seven.vercel.app`.
+- Se comprobó que el dominio público `soles-seven.vercel.app` pertenece al proyecto `soles`. La corrección definitiva de uploads reemplaza la inspección nativa de `sharp` por parsers seguros de JPEG, PNG y WebP, por lo que no depende de `libvips` en Vercel.
 
 ### Opción de edición en Recuerdos
 
