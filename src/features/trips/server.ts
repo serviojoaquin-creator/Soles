@@ -32,6 +32,8 @@ export async function getDashboardTrips(): Promise<DashboardTrip[]> {
   }
 
   const supabase = await createClient();
+  await supabase.rpc("sync_elapsed_trip_lifecycle");
+
   const { data, error } = await supabase
     .from("trip_members")
     .select("archived_at, role, trips!inner(*)")
