@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { inspectPhoto, safeOriginalName } from "@/features/album/image";
@@ -9,6 +12,18 @@ const onePixelPng = Buffer.from(
 const limits = { maxBytes: 1024, maxHeight: 100, maxWidth: 100 };
 
 describe("real photo inspection", () => {
+  it("does not rely on a native image runtime in the upload path", () => {
+    const implementation = readFileSync(
+      join(process.cwd(), "src/features/album/image.ts"),
+      "utf8",
+    );
+
+    expect(implementation).not.toContain('from "sharp"');
+    expect(implementation).toContain("function jpegSize");
+    expect(implementation).toContain("function pngSize");
+    expect(implementation).toContain("function webpSize");
+  });
+
   it("detects a real PNG and its dimensions", async () => {
     await expect(
       inspectPhoto(onePixelPng, "image/png", limits),
