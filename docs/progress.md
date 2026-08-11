@@ -407,3 +407,19 @@ Estado: infraestructura local implementada el 7 de agosto de 2026; recorrido pri
 - El owner puede decidir si un viaje finalizado se mantiene protegido o admite ediciones sin dejar de estar en Recuerdos. La opción inicia deshabilitada y se cambia únicamente mediante la RPC `set_trip_completed_editing`.
 - La migración `202608100001_completed_trip_editing_option.sql` agrega `trips.allow_completed_edits`, actualiza las protecciones de RLS, Storage, triggers y RPCs de borrado lógico. Fue aplicada correctamente al proyecto remoto de Supabase.
 - Verificación local: `npm run lint`, `npm run typecheck`, `npm test` (20 archivos, 94 pruebas) y `npm run build` correctos.
+
+## Ajuste de diseño de inicio
+
+Estado: implementado localmente el 11 de agosto de 2026.
+
+- La portada ahora utiliza la imagen de atardecer provista por producto, optimizada a WebP para reducir transferencia sin alterar la composición.
+- Se incorporó el logo definitivo de Soles en la navegación del inicio.
+- El titular, subtítulo y llamadas a la acción se centran sobre la imagen; se retiraron la tarjeta de viaje de demostración y la lista de beneficios solicitadas.
+
+## Recuerdos editables por defecto
+
+Estado: aplicada en Supabase y publicada el 11 de agosto de 2026.
+
+- Los viajes finalizados continúan en Recuerdos, con sus mismas políticas privadas, y admiten nuevas fotos, comentarios y ediciones conforme al rol de cada integrante.
+- La migración `202608110001_completed_trips_editable_by_default.sql` activa la opción para todos los Recuerdos existentes no eliminados y la deja habilitada para los viajes futuros.
+- El owner conserva la posibilidad de deshabilitar las ediciones explícitamente desde Configuración.
