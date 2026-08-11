@@ -31,7 +31,7 @@ Documento iniciado en la Fase 1 y actualizado hasta la auditoría local de la Fa
 - Clientes Supabase creados dentro de funciones, nunca como instancias globales evaluadas durante el build.
 - Las rutas autenticadas no se cachearán de forma compartida cuando se implemente Auth.
 - La interfaz utiliza una dirección visual cálida, privada y mobile-first, sin apariencia de red social pública.
-- La identidad de marca se denomina **Soles** y utiliza una paleta inspirada en el atardecer: crema cálido, coral, naranja solar y violeta profundo. El isotipo actual es provisorio y se reemplazará cuando se reciba el logo definitivo.
+- La identidad de marca se denomina **Soles** y utiliza una paleta inspirada en el atardecer: crema cálido, coral, naranja solar y violeta profundo. La marca usa el logo definitivo aportado por producto, optimizado como WebP local para evitar depender de archivos pesados en la navegación.
 - No se usa una entidad `groups`: `trip_members` representará el grupo de cada viaje.
 
 ## Decisiones de Fase 2
@@ -126,7 +126,8 @@ Documento iniciado en la Fase 1 y actualizado hasta la auditoría local de la Fa
 
 ## Decisiones de Fase 11
 
-- Un viaje completado sigue siendo un Recuerdo, pero el owner puede habilitar o deshabilitar sus ediciones sin cambiar su estado. La opción inicia deshabilitada. Cuando está activa se conservan los permisos habituales de owner, admin y member; solo el owner puede cambiarla mediante una RPC transaccional.
+- Los viajes finalizados conservan el estado `completed` y aparecen en Recuerdos, pero las ediciones quedan habilitadas por defecto. La migración habilita también los Recuerdos existentes sin ampliar la membresía ni los permisos por rol; el owner todavía puede deshabilitarlas de forma explícita.
+- Un viaje completado sigue siendo un Recuerdo, pero el owner puede habilitar o deshabilitar sus ediciones sin cambiar su estado. La opción queda habilitada por defecto. Cuando está activa se conservan los permisos habituales de owner, admin y member; solo el owner puede cambiarla mediante una RPC transaccional.
 - La inspección de fotos no depende de binarios nativos: valida firma, MIME real, dimensiones y animación de JPEG, PNG y WebP con parsers acotados de `Buffer`. Esto elimina el punto de fallo de `sharp`/`libvips` en funciones Linux de Vercel, sin relajar las comprobaciones previas a Storage.
 
 - Playwright prueba siempre la superficie pública en viewport de escritorio y móvil, incluida la protección de rutas y la neutralización de redirects externos.
