@@ -399,6 +399,7 @@ Estado: infraestructura local implementada el 7 de agosto de 2026; recorrido pri
 - Los registros de producción mostraron que la ruta de subida de fotos fallaba al cargar `sharp` porque faltaba `libvips-cpp.so.8.18.3`; no era un fallo de permisos de Supabase ni del bucket privado.
 - Se declararon como dependencias opcionales directas los paquetes Linux x64 de `sharp` y `libvips`, además del trazado ya existente. Vercel instalará el binario compatible durante su build Linux.
 - Verificación local posterior: `npm run lint`, `npm run typecheck`, `npm test` (19 archivos, 90 pruebas) y `npm run build` correctos. Falta comprobar una subida real después del próximo despliegue de producción.
+- El 11 de agosto de 2026 se conectó el repositorio de GitHub al proyecto de producción `soles-seven`; el siguiente commit de `main` despliega estas correcciones en `soles-seven.vercel.app`.
 
 ### Opción de edición en Recuerdos
 
